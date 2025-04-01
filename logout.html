@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logout - Railway Reservation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --primary: #7e22ce;
+            --primary-dark: #0f172a;
+            --secondary: #1e293b;
+            --ash: #64748b;
+            --light-ash: #e2e8f0;
+        }
+
+        body {
+            background-color: var(--primary-dark);
+            color: var(--light-ash);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            min-height: 100vh;
+        }
+
+        .primary-btn {
+            background: var(--primary);
+            color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(126, 34, 206, 0.3);
+        }
+
+        .primary-btn:hover {
+            background: #6b21a8;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(126, 34, 206, 0.4);
+        }
+
+        .logout-card {
+            background: var(--secondary);
+            border-radius: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            transform-style: preserve-3d;
+            transition: all 0.5s ease;
+        }
+
+        .logout-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-glass {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .logout-icon {
+            font-size: 72px;
+            color: var(--primary);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .countdown {
+            font-size: 18px;
+            color: var(--ash);
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center p-4">
+
+    <!-- Navigation -->
+    <nav class="nav-glass p-4 fixed w-full top-0 z-50 border-b border-slate-700">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <i class="fas fa-train text-2xl text-purple-500"></i>
+                <span class="text-xl font-bold text-white">Railway Reservation</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Logout Container -->
+    <div class="logout-card max-w-md w-full p-12 text-center">
+        <div class="logout-icon mb-6">
+            <i class="fas fa-sign-out-alt"></i>
+        </div>
+        
+        <h2 class="text-3xl font-bold mb-4">You're Logged Out</h2>
+        <p class="text-lg mb-6">Thank you for using Railway Reservation. You have been successfully logged out.</p>
+        
+        <div class="countdown mb-8">
+            Redirecting to homepage in <span id="countdown">5</span> seconds...
+        </div>
+        
+        <a href="index.html" class="primary-btn w-full py-3 rounded-lg flex items-center justify-center text-lg">
+            <i class="fas fa-home mr-2"></i> Return to Home
+        </a>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Countdown timer
+            let seconds = 5;
+            const countdownElement = document.getElementById('countdown');
+            const countdownInterval = setInterval(() => {
+                seconds--;
+                countdownElement.textContent = seconds;
+                
+                if (seconds <= 0) {
+                    clearInterval(countdownInterval);
+                    window.location.href = 'index.html';
+                }
+            }, 1000);
+            
+            // Clear session data (in a real app)
+            sessionStorage.clear();
+            localStorage.removeItem('authToken');
+        });
+    </script>
+</body>
+</html>

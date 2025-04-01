@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome | Railway Reservation</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Background Video -->
+    <video autoplay muted loop id="background-video">
+        <source src="videos/train.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <!-- Welcome Section -->
+    <div class="welcome-container">
+        <h1>🙏 Namaskar! Welcome to Railway Reservation System</h1>
+        <p>Your journey begins here! Today will be a great day.</p>
+        <button onclick="goToDashboard()">Explore Now</button>
+    </div>
+
+    <script>
+        function goToDashboard() {
+            window.location.href = "dashboard.html"; // Redirects to Dashboard
+        }
+    </script>
+
+</body>
+</html>

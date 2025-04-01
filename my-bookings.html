@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Dashboard | Railway Reservation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-purple: #7c3aed;
+            --purple-light: rgba(124, 58, 237, 0.2);
+            --purple-dark: #5b21b6;
+            --dark-bg: #0f172a;
+            --card-bg: #1e293b;
+            --text-light: #e2e8f0;
+            --text-muted: #94a3b8;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+        
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+        }
+        
+        .back-btn {
+            position: absolute;
+            left: 20px;
+            top: 20px;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: var(--text-light);
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            z-index: 10;
+            font-weight: 500;
+            backdrop-filter: blur(5px);
+        }
+        
+        .back-btn:hover {
+            background: rgba(124, 58, 237, 0.3);
+            transform: translateX(-5px);
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+        }
+        
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-top: 60px;
+        }
+        
+        h1 {
+            font-size: 28px;
+            margin: 0;
+            background: linear-gradient(90deg, var(--primary-purple), #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-left: 50px;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-primary {
+            background: var(--primary-purple);
+            color: white;
+            box-shadow: 0 4px 6px rgba(124, 58, 237, 0.2);
+        }
+        
+        .btn-primary:hover {
+            background: var(--purple-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(124, 58, 237, 0.3);
+        }
+        
+        .btn-primary::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                rgba(255,255,255,0.3),
+                rgba(255,255,255,0)
+            );
+            transform: translateY(100%);
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .btn-primary:hover::after {
+            transform: translateY(0);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--primary-purple);
+            color: var(--primary-purple);
+        }
+        
+        .btn-outline:hover {
+            background: var(--purple-light);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(124, 58, 237, 0.1);
+        }
+        
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--purple-light);
+            clip-path: circle(30% at 100% 0);
+            z-index: 0;
+            transition: clip-path 0.5s ease;
+        }
+        
+        .stat-card:hover::after {
+            clip-path: circle(70% at 100% 0);
+        }
+        
+        .stat-card-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .stat-title {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        
+        .stat-value {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .stat-change {
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .positive {
+            color: var(--success);
+        }
+        
+        .negative {
+            color: var(--error);
+        }
+        
+        .booking-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 20px;
+        }
+        
+        .booking-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .booking-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        .booking-header {
+            background: linear-gradient(90deg, var(--dark-bg), var(--primary-purple));
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .booking-id {
+            font-weight: 600;
+            font-size: 15px;
+        }
+        
+        .booking-status {
+            font-size: 12px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+        
+        .status-confirmed {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+        
+        .status-pending {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+        }
+        
+        .status-cancelled {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--error);
+        }
+        
+        .booking-body {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .journey-info h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: var(--primary-purple);
+            font-size: 18px;
+        }
+        
+        .train-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .train-icon {
+            color: var(--primary-purple);
+            font-size: 20px;
+        }
+        
+        .route {
+            display: flex;
+            justify-content: space-between;
+            margin: 15px 0;
+            position: relative;
+        }
+        
+        .route::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            z-index: 0;
+        }
+        
+        .station {
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            background: var(--card-bg);
+            padding: 0 10px;
+        }
+        
+        .station-name {
+            font-weight: 600;
+        }
+        
+        .station-time {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+        
+        .duration {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 12px;
+            margin: 10px 0;
+        }
+        
+        .receipt {
+            background: rgba(124, 58, 237, 0.1);
+            border-radius: 8px;
+            padding: 15px;
+            border: 1px solid rgba(124, 58, 237, 0.3);
+        }
+        
+        .receipt-title {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 16px;
+            color: var(--primary-purple);
+        }
+        
+        .receipt-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        
+        .receipt-total {
+            border-top: 1px dashed rgba(255,255,255,0.2);
+            padding-top: 10px;
+            margin-top: 10px;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .booking-actions {
+            display: flex;
+            gap: 10px;
+            padding: 0 20px 20px;
+        }
+        
+        .action-btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: 6px;
+            background: rgba(255,255,255,0.05);
+            border: none;
+            color: var(--text-light);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            transition: all 0.3s;
+        }
+        
+        .action-btn:hover {
+            background: rgba(124, 58, 237, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .action-btn i {
+            font-size: 14px;
+        }
+        
+        /* Floating animation for cards */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        .booking-card:nth-child(odd) {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .booking-card:nth-child(even) {
+            animation: float 6s ease-in-out infinite 1s;
+        }
+        
+        /* Responsive styles */
+        @media (max-width: 1024px) {
+            .stats-cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+                padding-top: 40px;
+            }
+            
+            h1 {
+                margin-left: 0;
+            }
+            
+            .booking-body {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .stats-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .booking-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .booking-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Back Button -->
+        <button class="back-btn" onclick="window.location.href='dashboard.html'">
+            <i class="fas fa-arrow-left"></i> Dashboard
+        </button>
+
+        <div class="dashboard-header">
+            <h1>Booking Dashboard</h1>
+            <div class="header-actions">
+                <button class="btn btn-primary" onclick="window.location.href='explore.html'">
+                    <i class="fas fa-plus"></i> New Booking
+                </button>
+                <button class="btn btn-outline">
+                    <i class="fas fa-filter"></i> Filters
+                </button>
+            </div>
+        </div>
+        
+        <div class="stats-cards">
+            <div class="stat-card">
+                <div class="stat-card-content">
+                    <div class="stat-title">Total Bookings</div>
+                    <div class="stat-value">24</div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-arrow-up"></i> 12% from last month
+                    </div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-content">
+                    <div class="stat-title">Upcoming Trips</div>
+                    <div class="stat-value">5</div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-arrow-up"></i> 2 new
+                    </div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-content">
+                    <div class="stat-title">Amount Spent</div>
+                    <div class="stat-value">₹18,745</div>
+                    <div class="stat-change negative">
+                        <i class="fas fa-arrow-down"></i> 5% from last month
+                    </div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-content">
+                    <div class="stat-title">Reward Points</div>
+                    <div class="stat-value">1,245</div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-arrow-up"></i> 15% available
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="booking-grid">
+            <!-- Booking Card 1 -->
+            <div class="booking-card">
+                <div class="booking-header">
+                    <div class="booking-id">#RT78945612</div>
+                    <div class="booking-status status-confirmed">CONFIRMED</div>
+                </div>
+                <div class="booking-body">
+                    <div class="journey-info">
+                        <h3>Rajdhani Express</h3>
+                        <div class="train-info">
+                            <i class="fas fa-train train-icon"></i>
+                            <div>12951 | Delhi → Mumbai</div>
+                        </div>
+                        <div class="route">
+                            <div class="station">
+                                <div class="station-name">Delhi (DEL)</div>
+                                <div class="station-time">15 Oct, 16:35</div>
+                            </div>
+                            <div class="station">
+                                <div class="station-name">Mumbai (CSTM)</div>
+                                <div class="station-time">16 Oct, 08:15</div>
+                            </div>
+                        </div>
+                        <div class="duration">Duration: 15h 40m</div>
+                        <div>
+                            <strong>Passenger:</strong> Rahul Sharma (32y)<br>
+                            <strong>Class:</strong> AC 2 Tier (B2 - 12 Lower)
+                        </div>
+                    </div>
+                    <div class="receipt">
+                        <h4 class="receipt-title">Payment Receipt</h4>
+                        <div class="receipt-item">
+                            <span>Base Fare</span>
+                            <span>₹2,450</span>
+                        </div>
+                        <div class="receipt-item">
+                            <span>Taxes & Charges</span>
+                            <span>₹185</span>
+                        </div>
+                        <div class="receipt-item">
+                            <span>Food Package</span>
+                            <span>₹200</span>
+                        </div>
+                        <div class="receipt-total">
+                            <span>Total Paid</span>
+                            <span>₹2,835</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="booking-actions">
+                    <button class="action-btn">
+                        <i class="fas fa-download"></i> Ticket
+                    </button>
+                    <button class="action-btn">
+                        <i class="fas fa-print"></i> Print
+                    </button>
+                    <button class="action-btn">
+                        <i class="fas fa-share"></i> Share
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Booking Card 2 -->
+            <div class="booking-card">
+                <div class="booking-header">
+                    <div class="booking-id">#RT65412398</div>
+                    <div class="booking-status status-pending">PENDING</div>
+                </div>
+                <div class="booking-body">
+                    <div class="journey-info">
+                        <h3>Shatabdi Express</h3>
+                        <div class="train-info">
+                            <i class="fas fa-train train-icon"></i>
+                            <div>12010 | Mumbai → Ahmedabad</div>
+                        </div>
+                        <div class="route">
+                            <div class="station">
+                                <div class="station-name">Mumbai (CSTM)</div>
+                                <div class="station-time">20 Oct, 06:25</div>
+                            </div>
+                            <div class="station">
+                                <div class="station-name">Ahmedabad (ADI)</div>
+                                <div class="station-time">20 Oct, 13:05</div>
+                            </div>
+                        </div>
+                        <div class="duration">Duration: 6h 40m</div>
+                        <div>
+                            <strong>Passenger:</strong> Priya Patel (28y)<br>
+                            <strong>Class:</strong> Executive Chair Car (A1 - 08 Window)
+                        </div>
+                    </div>
+                    <div class="receipt">
+                        <h4 class="receipt-title">Payment Receipt</h4>
+                        <div class="receipt-item">
+                            <span>Base Fare</span>
+                            <span>₹1,850</span>
+                        </div>
+                        <div class="receipt-item">
+                            <span>Taxes & Charges</span>
+                            <span>₹140</span>
+                        </div>
+                        <div class="receipt-total">
+                            <span>Total Paid</span>
+                            <span>₹1,990</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="booking-actions">
+                    <button class="action-btn">
+                        <i class="fas fa-clock"></i> Waitlist
+                    </button>
+                    <button class="action-btn">
+                        <i class="fas fa-exchange-alt"></i> Upgrade
+                    </button>
+                    <button class="action-btn">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Booking Card 3 -->
+            <div class="booking-card">
+                <div class="booking-header">
+                    <div class="booking-id">#RT32198765</div>
+                    <div class="booking-status status-confirmed">CONFIRMED</div>
+                </div>
+                <div class="booking-body">
+                    <div class="journey-info">
+                        <h3>Duronto Express</h3>
+                        <div class="train-info">
+                            <i class="fas fa-train train-icon"></i>
+                            <div>12284 | Bangalore → Delhi</div>
+                        </div>
+                        <div class="route">
+                            <div class="station">
+                                <div class="station-name">Bangalore (SBC)</div>
+                                <div class="station-time">25 Oct, 20:30</div>
+                            </div>
+                            <div class="station">
+                                <div class="station-name">Delhi (NDLS)</div>
+                                <div class="station-time">27 Oct, 05:15</div>
+                            </div>
+                        </div>
+                        <div class="duration">Duration: 32h 45m</div>
+                        <div>
+                            <strong>Passenger:</strong> Amit Kumar (45y)<br>
+                            <strong>Class:</strong> AC 3 Tier (B3 - 21 Middle)
+                        </div>
+                    </div>
+                    <div class="receipt">
+                        <h4 class="receipt-title">Payment Receipt</h4>
+                        <div class="receipt-item">
+                            <span>Base Fare</span>
+                            <span>₹1,750</span>
+                        </div>
+                        <div class="receipt-item">
+                            <span>Taxes & Charges</span>
+                            <span>₹135</span>
+                        </div>
+                        <div class="receipt-total">
+                            <span>Total Paid</span>
+                            <span>₹1,885</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="booking-actions">
+                    <button class="action-btn">
+                        <i class="fas fa-download"></i> Ticket
+                    </button>
+                    <button class="action-btn">
+                        <i class="fas fa-print"></i> Print
+                    </button>
+                    <button class="action-btn">
+                        <i class="fas fa-share"></i> Share
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Smooth transition for back button
+        document.querySelector('.back-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.body.style.opacity = '0.8';
+            document.body.style.transition = 'opacity 0.2s ease';
+            setTimeout(() => {
+                window.location.href = 'dashboard.html';
+            }, 200);
+        });
+        
+        // New Booking button redirect
+        document.querySelector('.btn-primary').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.body.style.opacity = '0.8';
+            document.body.style.transition = 'opacity 0.2s ease';
+            setTimeout(() => {
+                window.location.href = 'explore.html';
+            }, 200);
+        });
+        
+        // Reset opacity when returning to page
+        window.addEventListener('pageshow', function() {
+            document.body.style.opacity = '1';
+        });
+        
+        // Add ripple effect to buttons
+        document.querySelectorAll('.btn, .action-btn').forEach(button => {
+            button.addEventListener('click', function(e) {
+                const x = e.clientX - e.target.getBoundingClientRect().left;
+                const y = e.clientY - e.target.getBoundingClientRect().top;
+                
+                const ripple = document.createElement('span');
+                ripple.className = 'ripple';
+                ripple.style.left = `${x}px`;
+                ripple.style.top = `${y}px`;
+                
+                this.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 500);
+            });
+        });
+    </script>
+</body>
+</html>

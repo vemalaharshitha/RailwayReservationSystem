@@ -1,0 +1,51 @@
+/* Dashboard Page Styling */
+body {
+                    font-family: Arial, sans-serif;
+                    background: url('train.jpeg') no-repeat center center/cover;
+                    margin: 0;
+                    padding: 0;
+                    display: flex;
+                }
+                
+                /* Sidebar */
+                .sidebar {
+                    width: 250px;
+                    background: rgba(255, 254, 254, 0.8);
+                    color: white;
+                    height: 100vh;
+                    padding: 20px;
+                    position: fixed;
+                    left: 0;
+                }
+                
+                .sidebar h2 {
+                    text-align: center;
+                    margin-bottom: 20px;
+                }
+                
+                .sidebar ul {
+                    list-style: none;
+                    padding: 0;
+                }
+                
+                .sidebar ul li {
+                    padding: 15px 0;
+                    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+                }
+                
+                .sidebar ul li a {
+                    color: white;
+                    text-decoration: none;
+                    display: block;
+                }
+                
+                .sidebar ul li:hover {
+                    background: rgba(255, 255, 255, 0.2);
+                }
+                
+                /* Main Content */
+                .content {
+                    margin-left: 250px;
+                    padding: 20px;
+                    color: white;
+                }

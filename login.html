@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Railway Reservation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --primary: #7e22ce;
+            --primary-dark: #0f172a;
+            --secondary: #1e293b;
+            --ash: #64748b;
+            --light-ash: #e2e8f0;
+        }
+
+        body {
+            background-color: var(--primary-dark);
+            color: var(--light-ash);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            min-height: 100vh;
+        }
+
+        .primary-btn {
+            background: var(--primary);
+            color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(126, 34, 206, 0.3);
+        }
+
+        .primary-btn:hover {
+            background: #6b21a8;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(126, 34, 206, 0.4);
+        }
+
+        .back-btn {
+            background: var(--secondary);
+            color: var(--light-ash);
+            border: 1px solid var(--ash);
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: #334155;
+        }
+
+        .login-container {
+            perspective: 1000px;
+        }
+
+        .login-card {
+            background: var(--secondary);
+            border-radius: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            transform-style: preserve-3d;
+            transition: all 0.5s ease;
+        }
+
+        .login-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.3);
+        }
+
+        .left-panel {
+            background: linear-gradient(135deg, var(--primary) 0%, #581c87 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .train-track {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .moving-train {
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            font-size: 60px;
+            color: white;
+            opacity: 0.8;
+            animation: moveTrain 8s linear infinite;
+            transform: translateX(-100%);
+        }
+
+        @keyframes moveTrain {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(calc(100vw + 100px)); }
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 10px;
+            background: var(--primary-dark);
+            border: 1px solid var(--ash);
+            color: white;
+            transition: all 0.3s ease;
+            font-size: 15px;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(126, 34, 206, 0.3);
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--light-ash);
+        }
+
+        .error-message {
+            color: #f87171;
+            font-size: 13px;
+            margin-top: 4px;
+            display: none;
+        }
+
+        .stats-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-glass {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .floating-label {
+            position: absolute;
+            left: 16px;
+            top: 14px;
+            color: var(--ash);
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+
+        .form-group:focus-within .floating-label,
+        .form-input:not(:placeholder-shown) + .floating-label {
+            transform: translateY(-22px) scale(0.85);
+            background: var(--secondary);
+            padding: 0 5px;
+            color: var(--primary);
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--ash);
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .login-card {
+                flex-direction: column;
+            }
+            
+            .left-panel, .right-panel {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center p-4">
+
+    <!-- Navigation -->
+    <nav class="nav-glass p-4 fixed w-full top-0 z-50 border-b border-slate-700">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <i class="fas fa-train text-2xl text-purple-500"></i>
+                <span class="text-xl font-bold text-white">Railway Reservation</span>
+            </div>
+            <ul class="flex space-x-2">
+                <li><a href="dashboard.html" class="back-btn px-4 py-2 rounded-md flex items-center">
+                    <i class="fas fa-arrow-left mr-2"></i> Back
+                </a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Login Container -->
+    <div class="login-container max-w-6xl w-full">
+        <div class="login-card flex overflow-hidden">
+            <!-- Left Panel -->
+            <div class="left-panel w-1/2 p-12 flex flex-col justify-between text-white">
+                <div>
+                    <h1 class="text-4xl font-bold mb-4">All Aboard!</h1>
+                    <p class="text-lg opacity-90 mb-8">Your journey begins here. Sign in to book tickets, manage reservations, and track your trips.</p>
+                    
+                    <div class="stats-card mb-6">
+                        <h3 class="font-medium mb-3 text-lg">System Status</h3>
+                        <div id="live-stats" class="space-y-3">
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center">
+                                    <div class="w-3 h-3 rounded-full bg-green-500 mr-2"></div>
+                                    <span class="text-sm opacity-90">Booking System</span>
+                                </div>
+                                <span class="font-medium">Operational</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center">
+                                    <div class="w-3 h-3 rounded-full bg-green-500 mr-2"></div>
+                                    <span class="text-sm opacity-90">Payment Gateway</span>
+                                </div>
+                                <span class="font-medium">Online</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center">
+                                    <div class="w-3 h-3 rounded-full bg-green-500 mr-2"></div>
+                                    <span class="text-sm opacity-90">Trains Running</span>
+                                </div>
+                                <span class="font-medium">342</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="train-track">
+                    <div class="moving-train">
+                        <i class="fas fa-train"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Panel -->
+            <div class="right-panel w-1/2 p-12 bg-secondary flex flex-col justify-center">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold mb-2">Welcome Back</h2>
+                    <p class="text-slate-400">Sign in to continue your journey</p>
+                </div>
+                
+                <form id="loginForm" class="space-y-6">
+                    <div class="form-group relative">
+                        <input type="text" id="username" class="form-input" placeholder=" " required>
+                        <label for="username" class="floating-label">Username</label>
+                        <div id="usernameError" class="error-message">Please enter your username</div>
+                    </div>
+                    
+                    <div class="form-group relative">
+                        <input type="password" id="password" class="form-input" placeholder=" " required>
+                        <label for="password" class="floating-label">Password</label>
+                        <i class="fas fa-eye password-toggle" id="togglePassword"></i>
+                        <div id="passwordError" class="error-message">Please enter your password</div>
+                    </div>
+                    
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center">
+                            <input type="checkbox" id="remember" class="mr-2 rounded text-purple-500 focus:ring-purple-500">
+                            <label for="remember" class="text-sm">Remember me</label>
+                        </div>
+                        <a href="#" class="text-sm text-purple-400 hover:underline">Forgot password?</a>
+                    </div>
+                    
+                    <button type="submit" class="primary-btn w-full py-3 rounded-lg flex items-center justify-center text-lg">
+                        <i class="fas fa-sign-in-alt mr-2"></i> Login
+                    </button>
+                    
+                    <div id="loginError" class="error-message text-center py-2 hidden"></div>
+                    
+                    <div class="text-center text-sm mt-6">
+                        <span class="text-slate-400">New to Railway Reservation?</span>
+                        <a href="index.html" class="text-purple-400 hover:underline ml-1 font-medium">Create account</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginForm = document.getElementById('loginForm');
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('password');
+            const togglePassword = document.getElementById('togglePassword');
+            const usernameError = document.getElementById('usernameError');
+            const passwordError = document.getElementById('passwordError');
+            const loginError = document.getElementById('loginError');
+            
+            // Test Case Data
+            const testCases = {
+                valid: {
+                    username: 'testuser',
+                    password: 'Pass@123'
+                },
+                invalid: {
+                    username: 'wronguser',
+                    password: 'wrongpass'
+                }
+            };
+            
+            // Toggle password visibility
+            togglePassword.addEventListener('click', function() {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                this.classList.toggle('fa-eye-slash');
+            });
+            
+            // Form submission handler
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                resetErrors();
+                
+                if (validateForm()) {
+                    authenticateUser(usernameInput.value, passwordInput.value);
+                }
+            });
+            
+            function resetErrors() {
+                usernameError.style.display = 'none';
+                passwordError.style.display = 'none';
+                loginError.classList.add('hidden');
+            }
+            
+            function validateForm() {
+                let isValid = true;
+                
+                // Username validation
+                if (!usernameInput.value.trim()) {
+                    usernameError.textContent = 'Username is required';
+                    usernameError.style.display = 'block';
+                    isValid = false;
+                }
+                
+                // Password validation
+                if (!passwordInput.value.trim()) {
+                    passwordError.textContent = 'Password is required';
+                    passwordError.style.display = 'block';
+                    isValid = false;
+                }
+                
+                return isValid;
+            }
+            
+            function authenticateUser(username, password) {
+                const submitBtn = loginForm.querySelector('button[type="submit"]');
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Signing in...';
+                
+                // Simulate API call
+                setTimeout(() => {
+                    // Test Case 1: Valid credentials
+                    if (username === testCases.valid.username && password === testCases.valid.password) {
+                        window.location.href = 'dashboard.html';
+                        return;
+                    }
+                    
+                    // Test Case 2: Invalid credentials
+                    if (username === testCases.invalid.username && password === testCases.invalid.password) {
+                        showLoginError('Invalid Username or Password');
+                    } else {
+                        showLoginError('Invalid Username or Password');
+                    }
+                    
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i> Login';
+                }, 1500);
+            }
+            
+            function showLoginError(message) {
+                loginError.textContent = message;
+                loginError.classList.remove('hidden');
+                loginForm.classList.add('animate-shake');
+                setTimeout(() => loginForm.classList.remove('animate-shake'), 500);
+            }
+            
+            // Add shake animation
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes shake {
+                    0%, 100% { transform: translateX(0); }
+                    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+                    20%, 40%, 60%, 80% { transform: translateX(5px); }
+                }
+                .animate-shake {
+                    animation: shake 0.5s;
+                }
+            `;
+            document.head.appendChild(style);
+        });
+    </script>
+</body>
+</html>

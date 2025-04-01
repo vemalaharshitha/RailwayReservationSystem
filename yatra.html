@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Divine Rail Yatra - Spiritual Journeys</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #7c3aed;
+            --primary-light: rgba(124, 58, 237, 0.2);
+            --primary-dark: #5b21b6;
+            --dark-bg: #0f172a;
+            --card-bg: #1e293b;
+            --text-light: #e2e8f0;
+            --text-muted: #94a3b8;
+            --success: #10b981;
+            --gold: #fbbf24;
+            --saffron: #f97316;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-light);
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: rgba(30, 41, 59, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+        }
+
+        .navbar a {
+            color: var(--text-light);
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+        }
+
+        .navbar a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        .navbar a:hover::after {
+            width: 70%;
+        }
+
+        .navbar a:hover {
+            color: white;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .header h1 {
+            color: var(--rose-white);
+            margin: 0 0 15px;
+            font-size: 2.8rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--gold), var(--saffron));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: inline-block;
+            text-shadow: 0 2px 10px rgba(251, 191, 36, 0.2);
+        }
+
+        .header p {
+            color: var(--text-muted);
+            max-width: 700px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .divider {
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), transparent);
+            margin: 20px auto;
+            border-radius: 2px;
+        }
+
+        .trips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .trip-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            border: 1px solid rgba(148, 163, 184, 0.1);
+        }
+
+        .trip-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+            border-color: rgba(124, 58, 237, 0.3);
+        }
+
+        .trip-image-container {
+            position: relative;
+            height: 220px;
+            overflow: hidden;
+        }
+
+        .trip-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s ease;
+        }
+
+        .trip-card:hover .trip-image {
+            transform: scale(1.1);
+        }
+
+        .trip-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.7));
+            padding: 20px;
+            color: white;
+        }
+
+        .trip-tag {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--primary);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+        .trip-content {
+            padding: 25px;
+        }
+
+        .trip-card h2 {
+            margin: 0 0 10px;
+            color: var(--gold);
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .trip-card h2 i {
+            color: var(--primary);
+        }
+
+        .trip-card p {
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .trip-details {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .trip-detail {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--text-muted);
+        }
+
+        .trip-detail i {
+            color: var(--primary);
+        }
+
+        .book-btn {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            padding: 14px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .book-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .book-btn:hover::before {
+            left: 100%;
+        }
+
+        .book-btn:hover {
+            box-shadow: 0 5px 15px rgba(124, 58, 237, 0.4);
+        }
+
+        /* Booking confirmation */
+        .confirmation {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 0 40px rgba(0,0,0,0.8);
+            z-index: 1000;
+            display: none;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            border-top: 5px solid var(--success);
+            animation: fadeIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translate(-50%, -40%); }
+            to { opacity: 1; transform: translate(-50%, -50%); }
+        }
+
+        .checkmark-container {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 25px;
+        }
+
+        .checkmark-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); opacity: 0.7; }
+            50% { transform: scale(1.05); opacity: 0.9; }
+            100% { transform: scale(0.95); opacity: 0.7; }
+        }
+
+        .checkmark {
+            position: relative;
+            color: var(--success);
+            font-size: 50px;
+            line-height: 80px;
+            animation: bounce 0.6s;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-20px);}
+            60% {transform: translateY(-10px);}
+        }
+
+        .confirmation h2 {
+            color: var(--success);
+            margin-bottom: 15px;
+            font-size: 1.8rem;
+        }
+
+        .confirmation p {
+            margin-bottom: 30px;
+            color: var(--text-light);
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .blessing {
+            font-style: italic;
+            color: var(--gold);
+            margin-top: 15px;
+            font-size: 1rem;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
+            z-index: 999;
+            display: none;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close-btn:hover {
+            color: var(--text-light);
+        }
+
+        /* Floating action button */
+        .fab {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 5px 20px rgba(124, 58, 237, 0.5);
+            cursor: pointer;
+            z-index: 90;
+            transition: all 0.3s ease;
+            border: none;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+        }
+
+        .fab.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .fab:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(124, 58, 237, 0.6);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+                padding: 10px;
+            }
+            
+            .trips-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .trip-card {
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="dashboard.html"><i class="fas fa-home"></i> Home</a>
+        <a href="my-bookings.html"><i class="fas fa-ticket-alt"></i> My Bookings</a>
+        <a href="account.html"><i class="fas fa-user"></i> Account</a>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-train"></i>Sacred Railway Journeys</h1>
+            <div class="divider"></div>
+            <p>Embark on a spiritual pilgrimage through India's most sacred destinations with our exclusive railway packages. Experience divine energy, ancient temples, and cultural heritage.</p>
+        </div>
+        
+        <div class="trips-grid">
+            <!-- Varanasi -->
+            <div class="trip-card">
+                <div class="trip-image-container">
+                    <img src="https://images.unsplash.com/photo-1581852057101-dc9349b886f3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
+                         alt="Varanasi Ghats" class="trip-image">
+                    <div class="trip-overlay">
+                        <h3>Kashi Vishwanath Temple</h3>
+                    </div>
+                    <span class="trip-tag">Most Sacred</span>
+                </div>
+                <div class="trip-content">
+                    <h2><i class="fas fa-om"></i> Varanasi Spiritual Journey</h2>
+                    <p>Experience the eternal city of Lord Shiva. Witness the Ganga Aarti at Dashashwamedh Ghat, visit the Kashi Vishwanath Temple, and attain spiritual liberation in the world's oldest living city.</p>
+                    
+                    <div class="trip-details">
+                        <div class="trip-detail">
+                            <i class="fas fa-clock"></i> 3 Days
+                        </div>
+                        <div class="trip-detail">
+                            <i class="fas fa-rupee-sign"></i> From ₹5,999
+                        </div>
+                        <div class="trip-detail">
+                            <i class="fas fa-calendar-alt"></i> Monthly Departures
+                        </div>
+                    </div>
+                    
+                    <button class="book-btn" onclick="bookTrip('Varanasi Spiritual Journey')">
+                        <i class="fas fa-bookmark"></i> Book Now
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Tiruvannamalai -->
+            <div class="trip-card">
+                <div class="trip-image-container">
+                    <img src="https://images.unsplash.com/photo-1604658243840-6ad059557976?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1632&q=80" 
+                         alt="Arunachaleswarar Temple" class="trip-image">
+                    <div class="trip-overlay">
+                        <h3>Arunachaleswarar Temple</h3>
+                    </div>
+                    <span class="trip-tag">New</span>
+                </div>
+                <div class="trip-content">
+                    <h2><i class="fas fa-mountain"></i> Tiruvannamalai Temple Tour</h2>
+                    <p>Seek blessings at the sacred Arunachaleswarar Temple, home to Lord Shiva as the fiery mountain. Perform Girivalam (circumambulation) of Annamalai Hill at full moon.</p>
+                    
+                    <div class="trip-details">
+                        <div class="trip-detail">
+                            <i class="fas fa-clock"></i> 4 Days
+                        </div>
+                        <div class="trip-detail">
+                            <i class="fas fa-rupee-sign"></i> From ₹6,499
+                        </div>
+                        <div class="trip-detail">
+                            <i class="fas fa-calendar-alt"></i> Full Moon Special
+                        </div>
+                    </div>
+                    
+                    <button class="book-btn" onclick="bookTrip('Tiruvannamalai Temple Tour')">
+                        <i class="fas fa-bookmark"></i> Book Now
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Ayodhya -->
+            <div class="trip-card">
+                <div class="trip-image-container">
+                    <img src="https://images.unsplash.com/photo-1632499246013-c205a0086820?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1632&q=80" 
+                         alt="Ram Mandir Ayodhya" class="trip-image">
+                    <div class="trip-overlay">
+                        <h3>Shri Ram Janmabhoomi</h3>
+                    </div>
+                    <span class="trip-tag">Special</span>
+                </div>
+                <div class="trip-content">
+                    <h2><i class="fas fa-place-of-worship"></i> Ayodhya Pilgrimage</h2>
+                    <p>Visit the sacred birthplace of Lord Rama. Experience the magnificent Ram Mandir, Hanuman Garhi, and the Sarayu River Aarti in this divine city.</p>
+                    
+                    <div class="trip-details">
+                        <div class="trip-detail">
+                            <i class="fas fa-clock"></i> 2 Days
+                        </div>
+                        <div class="trip-detail">
+                            <i class="fas fa-rupee-sign"></i> From ₹4,999
+                        </div>
+                        <div class="trip-detail">
+                            <i class="fas fa-calendar-alt"></i> Weekly Departures
+                        </div>
+                    </div>
+                    
+                    <button class="book-btn" onclick="bookTrip('Ayodhya Pilgrimage')">
+                        <i class="fas fa-bookmark"></i> Book Now
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Puri -->
+            <div class="trip-card">
+                <div class="trip-image-container">
+                    <img src="https://images.unsplash.com/photo-1609331400241-33c9a210d3bc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
+                         alt="Jagannath Temple Puri" class="trip-image">
+                    <div class="trip-overlay">
+                        <h3>Jagannath Temple</h3>
+                    </div>
+                </div>
+                <div class="trip-content">
+                    <h2><i class="fas fa-temple"></i> Puri Jagannath Yatra</h2>
+                    <p>Visit one of the Char Dhams and seek blessings of Lord Jagannath, Balabhadra and Subhadra. Witness the divine Rath Yatra and the sacred Mahaprasad.</p>
+                    
+                    <div class="trip-details">
+                        <div class="trip-detail">
+                            <i class="fas fa-clock"></i> 5 Days
+                        </div>
+                        <div class="trip-detail">
+                            <i class="fas fa-rupee-sign"></i> From ₹7,999
+                        </div>
+                        <div class="trip-detail">
+                            <i class="fas fa-calendar-alt"></i> Seasonal
+                        </div>
+                    </div>
+                    
+                    <button class="book-btn" onclick="bookTrip('Puri Jagannath Yatra')">
+                        <i class="fas fa-bookmark"></i> Book Now
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Rameswaram -->
+            <div class="trip-card">
+                <div class="trip-image-container">
+                    <img src="https://images.unsplash.com/photo-1603808033582-3a9b0c576c4f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
+                         alt="Ramanathaswamy Temple" class="trip-image">
+                    <div class="trip-overlay">
+                        <h3>Ramanathaswamy Temple</h3>
+                    </div>
+                </div>
+                <div class="trip-content">
+                    <h2><i class="fas fa-water"></i> Rameswaram Pilgrimage</h2>
+                    <p>Experience the sacred Ramanathaswamy Temple and take holy dips in the 22 Theerthams. Visit Dhanushkodi where Lord Rama built the bridge to Lanka.</p>
+                    
+                    <div class="trip-details">
+                        <div class="trip-detail">
+                            <i class="fas fa-clock"></i> 4 Days
+                        </div>
+                        <div class="trip-detail">
+                            <i class="fas fa-rupee-sign"></i> From ₹6,799
+                        </div>
+                        <div class="trip-detail">
+                            <i class="fas fa-calendar-alt"></i> Monthly
+                        </div>
+                    </div>
+                    
+                    <button class="book-btn" onclick="bookTrip('Rameswaram Pilgrimage')">
+                        <i class="fas fa-bookmark"></i> Book Now
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Amritsar -->
+            <div class="trip-card">
+                <div class="trip-image-container">
+                    <img src="https://images.unsplash.com/photo-1582972236019-ea9e36d7f32f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
+                         alt="Golden Temple" class="trip-image">
+                    <div class="trip-overlay">
+                        <h3>Harmandir Sahib</h3>
+                    </div>
+                    <span class="trip-tag">Popular</span>
+                </div>
+                <div class="trip-content">
+                    <h2><i class="fas fa-dharmachakra"></i> Golden Temple Experience</h2>
+                    <p>Visit the holiest Gurudwara of Sikhism - the Golden Temple. Experience the divine Guru Ka Langar, the peaceful Sarovar, and the eternal Sukhmani Sahib path.</p>
+                    
+                    <div class="trip-details">
+                        <div class="trip-detail">
+                            <i class="fas fa-clock"></i> 3 Days
+                        </div>
+                        <div class="trip-detail">
+                            <i class="fas fa-rupee-sign"></i> From ₹5,499
+                        </div>
+                        <div class="trip-detail">
+                            <i class="fas fa-calendar-alt"></i> Weekly
+                        </div>
+                    </div>
+                    
+                    <button class="book-btn" onclick="bookTrip('Golden Temple Experience')">
+                        <i class="fas fa-bookmark"></i> Book Now
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating action button -->
+    <button class="fab" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Confirmation Popup -->
+    <div class="overlay" id="overlay"></div>
+    <div class="confirmation" id="confirmation">
+        <button class="close-btn" onclick="closeConfirmation()">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="checkmark-container">
+            <div class="checkmark-bg"></div>
+            <div class="checkmark">
+                <i class="fas fa-check-circle"></i>
+            </div>
+        </div>
+        <h2>Yatra Confirmed!</h2>
+        <p id="confirmation-text">Your spiritual journey has been successfully booked.</p>
+        <p class="blessing">"May the divine bless your pilgrimage with peace and enlightenment"</p>
+        <button class="book-btn" onclick="closeConfirmation()">
+            <i class="fas fa-hands-praying"></i> Accept Blessings
+        </button>
+    </div>
+
+    <script>
+        function bookTrip(destination) {
+            const blessings = [
+                "May Lord Shiva bless your journey with spiritual awakening",
+                "May Lord Rama guide your path to divine realization",
+                "May the sacred energy fill your soul with peace",
+                "May your pilgrimage bring you closer to the eternal",
+                "May the divine light illuminate your spiritual path",
+                "May your yatra be filled with blessings and grace"
+            ];
+            
+            const randomBlessing = blessings[Math.floor(Math.random() * blessings.length)];
+            
+            document.getElementById('confirmation-text').textContent = 
+                `Your ${destination} has been successfully booked. A confirmation has been sent to your email.`;
+            document.querySelector('.blessing').textContent = `"${randomBlessing}"`;
+            
+            document.getElementById('overlay').style.display = 'block';
+            document.getElementById('confirmation').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            
+            // Add celebration effect
+            celebrate();
+        }
+
+        function closeConfirmation() {
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('confirmation').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        function celebrate() {
+            const confettiSettings = {
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#7c3aed', '#fbbf24', '#10b981', '#ffffff']
+            };
+            
+            // This would require a confetti library - in a real implementation you would:
+            // 1. Include confetti.js library
+            // 2. Call confetti(confettiSettings);
+            
+            // For this example, we'll simulate with a simple animation
+            const confirmation = document.getElementById('confirmation');
+            confirmation.style.animation = 'none';
+            void confirmation.offsetWidth; // Trigger reflow
+            confirmation.style.animation = 'fadeIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+        }
+
+        // Show scroll-to-top button when scrolling down
+        window.addEventListener('scroll', function() {
+            const fab = document.querySelector('.fab');
+            if (window.scrollY > 300) {
+                fab.classList.add('visible');
+            } else {
+                fab.classList.remove('visible');
+            }
+        });
+
+        // Initialize with a random blessing
+        document.querySelector('.blessing').textContent = 
+            `"${["May the divine bless your pilgrimage", "May your journey be filled with spiritual light", "May the sacred energy guide your path"][Math.floor(Math.random()*3)]}"`;
+    </script>
+</body>
+</html>

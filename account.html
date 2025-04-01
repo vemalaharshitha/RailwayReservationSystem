@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account | Railway Reservation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-purple: #7c3aed;
+            --purple-light: rgba(124, 58, 237, 0.2);
+            --purple-dark: #5b21b6;
+            --dark-bg: #0f172a;
+            --card-bg: #1e293b;
+            --text-light: #e2e8f0;
+            --text-muted: #94a3b8;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+        
+        .account-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+        }
+        
+        .back-btn {
+            position: absolute;
+            left: 20px;
+            top: 20px;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: var(--text-light);
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            z-index: 10;
+            font-weight: 500;
+        }
+        
+        .back-btn:hover {
+            background: rgba(124, 58, 237, 0.3);
+            transform: translateX(-3px);
+        }
+        
+        .account-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-top: 20px;
+        }
+        
+        .account-header h1 {
+            font-size: 32px;
+            margin: 0;
+            background: linear-gradient(90deg, var(--primary-purple), #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .account-header p {
+            color: var(--text-muted);
+            margin-top: 10px;
+        }
+        
+        .account-grid {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+        }
+        
+        .account-sidebar {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 20px;
+            height: fit-content;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .profile-card {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .profile-pic {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--primary-purple);
+            margin: 0 auto 15px;
+            display: block;
+            transition: all 0.3s;
+        }
+        
+        .profile-pic:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(124, 58, 237, 0.5);
+        }
+        
+        .profile-name {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .profile-email {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        
+        .member-since {
+            font-size: 12px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+        
+        .nav-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .nav-item {
+            margin-bottom: 5px;
+        }
+        
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            border-radius: 6px;
+            color: var(--text-light);
+            text-decoration: none;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            background: var(--purple-light);
+            color: var(--primary-purple);
+        }
+        
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            right: 15px;
+            width: 8px;
+            height: 8px;
+            background: var(--primary-purple);
+            border-radius: 50%;
+        }
+        
+        .nav-link i {
+            width: 20px;
+            text-align: center;
+        }
+        
+        .account-content {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .section-title {
+            font-size: 22px;
+            margin-top: 0;
+            margin-bottom: 25px;
+            color: var(--primary-purple);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: var(--primary-purple);
+            border-radius: 3px;
+        }
+        
+        .section-title i {
+            font-size: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-light);
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 6px;
+            color: var(--text-light);
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-purple);
+            box-shadow: 0 0 0 3px var(--purple-light);
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 15px;
+        }
+        
+        .btn-primary {
+            background: var(--primary-purple);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--purple-dark);
+            transform: translateY(-2px);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--primary-purple);
+            color: var(--primary-purple);
+        }
+        
+        .btn-outline:hover {
+            background: var(--purple-light);
+            transform: translateY(-2px);
+        }
+        
+        .preferences-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .preference-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+            padding: 15px;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .preference-card:hover {
+            border-color: var(--primary-purple);
+            background: var(--purple-light);
+            transform: translateY(-3px);
+        }
+        
+        .preference-card.active {
+            border-color: var(--primary-purple);
+            background: var(--purple-light);
+            box-shadow: 0 0 0 3px var(--purple-light);
+        }
+        
+        .preference-icon {
+            font-size: 20px;
+            color: var(--primary-purple);
+            margin-bottom: 10px;
+        }
+        
+        .preference-title {
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        
+        .preference-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+        
+        .security-alert {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+        
+        .security-alert i {
+            color: var(--error);
+            font-size: 20px;
+        }
+        
+        .security-alert-content h4 {
+            margin: 0 0 5px;
+            color: var(--error);
+        }
+        
+        .security-alert-content p {
+            margin: 0;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+        
+        .password-strength {
+            margin-top: 5px;
+            height: 5px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 5px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .password-strength::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 0%;
+            background: var(--error);
+            transition: width 0.3s;
+        }
+        
+        .password-strength.weak::after {
+            width: 30%;
+            background: var(--error);
+        }
+        
+        .password-strength.medium::after {
+            width: 60%;
+            background: var(--warning);
+        }
+        
+        .password-strength.strong::after {
+            width: 100%;
+            background: var(--success);
+        }
+        
+        .password-strength-text {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 3px;
+            text-align: right;
+        }
+        
+        .account-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--primary-purple);
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .edit-profile-btn {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            background: rgba(124, 58, 237, 0.2);
+            border: none;
+            color: var(--primary-purple);
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 13px;
+            transition: all 0.3s;
+        }
+        
+        .edit-profile-btn:hover {
+            background: rgba(124, 58, 237, 0.3);
+        }
+        
+        .error-message {
+            color: var(--error);
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .invalid {
+            border-color: var(--error) !important;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2) !important;
+        }
+        
+        @media (max-width: 768px) {
+            .account-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .account-header {
+                margin-top: 40px;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .preferences-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .account-stats {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .preferences-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .account-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="account-container">
+        <!-- Back Button -->
+        <button class="back-btn" onclick="window.location.href='dashboard.html'">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </button>
+
+        <div class="account-header">
+            <h1>My Account</h1>
+            <p>Manage your profile, preferences, and security settings</p>
+        </div>
+        
+        <div class="account-grid">
+            <div class="account-sidebar">
+                <div class="profile-card">
+                    <img src="https://ui-avatars.com/api/?name=harshitha&background=7c3aed&color=fff" alt="Profile" class="profile-pic">
+                    <div class="profile-name">Harshitha</div>
+                    <div class="profile-email">harshitha.vr@example.com</div>
+                    <div class="member-since">
+                        <i class="far fa-calendar-alt"></i> Member since Oct 2020
+                    </div>
+                </div>
+                
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link active">
+                            <i class="fas fa-user"></i> Profile
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="my-bookings.html" class="nav-link">
+                            <i class="fas fa-ticket-alt"></i> My Bookings
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="fas fa-cog"></i> Preferences
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="fas fa-shield-alt"></i> Security
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="fas fa-bell"></i> Notifications
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="fas fa-credit-card"></i> Payment Methods
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="account-content">
+                <button class="edit-profile-btn">
+                    <i class="fas fa-edit"></i> Edit Profile
+                </button>
+                
+                <h2 class="section-title">
+                    <i class="fas fa-user-edit"></i> Profile Information
+                </h2>
+                
+                <div class="account-stats">
+                    <div class="stat-card">
+                        <div class="stat-value">24</div>
+                        <div class="stat-label">Total Bookings</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">5</div>
+                        <div class="stat-label">Upcoming Trips</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">18</div>
+                        <div class="stat-label">Past Trips</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">Gold</div>
+                        <div class="stat-label">Loyalty Tier</div>
+                    </div>
+                </div>
+                
+                <form id="profileForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>First Name</label>
+                            <input type="text" id="firstName" value="Harshitha" required>
+                            <div class="error-message" id="firstNameError">First name is required</div>
+                        </div>
+                        <div class="form-group">
+                            <label>Last Name</label>
+                            <input type="text" id="lastName" value="V R" required>
+                            <div class="error-message" id="lastNameError">Last name is required</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" id="email" value="harshitha.vr@example.com" disabled>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Mobile Number</label>
+                            <input type="tel" id="mobile" value="+91 9876543210" required>
+                            <div class="error-message" id="mobileError">Valid mobile number is required</div>
+                        </div>
+                        <div class="form-group">
+                            <label>Date of Birth</label>
+                            <input type="date" id="dob" value="1985-06-15" required>
+                            <div class="error-message" id="dobError">Valid date of birth is required</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Address</label>
+                        <input type="text" id="address" value="123 Railway Colony" required>
+                        <div class="error-message" id="addressError">Address is required</div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>City</label>
+                            <input type="text" id="city" value="Mumbai" required>
+                            <div class="error-message" id="cityError">City is required</div>
+                        </div>
+                        <div class="form-group">
+                            <label>State</label>
+                            <select id="state" required>
+                                <option value="">Select State</option>
+                                <option selected>Maharashtra</option>
+                                <option>Delhi</option>
+                                <option>Karnataka</option>
+                                <option>West Bengal</option>
+                                <option>Tamil Nadu</option>
+                            </select>
+                            <div class="error-message" id="stateError">State is required</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>PIN Code</label>
+                            <input type="text" id="pincode" value="400001" required>
+                            <div class="error-message" id="pincodeError">Valid PIN code is required</div>
+                        </div>
+                        <div class="form-group">
+                            <label>Country</label>
+                            <input type="text" id="country" value="India" disabled>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>About You</label>
+                        <textarea id="about" rows="3" placeholder="Tell us about yourself">Frequent traveler who prefers window seats and vegetarian meals.</textarea>
+                    </div>
+                    
+                    <div style="display: flex; gap: 15px; margin-top: 30px;">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Save Changes
+                        </button>
+                        <button type="button" class="btn btn-outline" id="cancelBtn">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+                
+                <h2 class="section-title" style="margin-top: 40px;">
+                    <i class="fas fa-cog"></i> Travel Preferences
+                </h2>
+                
+                <div class="preferences-grid">
+                    <div class="preference-card active">
+                        <div class="preference-icon">
+                            <i class="fas fa-bed"></i>
+                        </div>
+                        <div class="preference-title">Lower Berth</div>
+                        <div class="preference-desc">Prefer lower berths in sleeper coaches</div>
+                    </div>
+                    
+                    <div class="preference-card active">
+                        <div class="preference-icon">
+                            <i class="fas fa-utensils"></i>
+                        </div>
+                        <div class="preference-title">Vegetarian Meals</div>
+                        <div class="preference-desc">Prefer vegetarian food options</div>
+                    </div>
+                    
+                    <div class="preference-card">
+                        <div class="preference-icon">
+                            <i class="fas fa-wheelchair"></i>
+                        </div>
+                        <div class="preference-title">Accessibility</div>
+                        <div class="preference-desc">Require wheelchair access</div>
+                    </div>
+                    
+                    <div class="preference-card active">
+                        <div class="preference-icon">
+                            <i class="fas fa-window-maximize"></i>
+                        </div>
+                        <div class="preference-title">Window Seat</div>
+                        <div class="preference-desc">Prefer window seats when available</div>
+                    </div>
+                    
+                    <div class="preference-card">
+                        <div class="preference-icon">
+                            <i class="fas fa-train"></i>
+                        </div>
+                        <div class="preference-title">AC Coaches</div>
+                        <div class="preference-desc">Prefer air-conditioned coaches</div>
+                    </div>
+                    
+                    <div class="preference-card">
+                        <div class="preference-icon">
+                            <i class="fas fa-smoking-ban"></i>
+                        </div>
+                        <div class="preference-title">Non-Smoking</div>
+                        <div class="preference-desc">Prefer non-smoking compartments</div>
+                    </div>
+                </div>
+                
+                <h2 class="section-title" style="margin-top: 40px;">
+                    <i class="fas fa-shield-alt"></i> Account Security
+                </h2>
+                
+                <div class="security-alert">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div class="security-alert-content">
+                        <h4>Security Recommendation</h4>
+                        <p>Your password hasn't been changed in 6 months. Consider updating it for better security.</p>
+                    </div>
+                </div>
+                
+                <form id="securityForm">
+                    <div class="form-group">
+                        <label>Current Password</label>
+                        <input type="password" id="currentPassword" placeholder="Enter current password" required>
+                        <div class="error-message" id="currentPasswordError">Current password is required</div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>New Password</label>
+                            <input type="password" id="newPassword" placeholder="Enter new password" required>
+                            <div class="password-strength" id="passwordStrength"></div>
+                            <div class="password-strength-text" id="passwordStrengthText"></div>
+                            <div class="error-message" id="newPasswordError">New password is required</div>
+                        </div>
+                        <div class="form-group">
+                            <label>Confirm Password</label>
+                            <input type="password" id="confirmPassword" placeholder="Confirm new password" required>
+                            <div class="error-message" id="confirmPasswordError">Passwords do not match</div>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-key"></i> Change Password
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Back button functionality
+        document.querySelector('.back-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.body.style.opacity = '0.8';
+            document.body.style.transition = 'opacity 0.2s ease';
+            setTimeout(() => {
+                window.location.href = 'dashboard.html';
+            }, 200);
+        });
+        
+        // Reset opacity when returning to page
+        window.addEventListener('pageshow', function() {
+            document.body.style.opacity = '1';
+        });
+        
+        // Toggle preference cards
+        document.querySelectorAll('.preference-card').forEach(card => {
+            card.addEventListener('click', function() {
+                this.classList.toggle('active');
+            });
+        });
+        
+        // Password strength indicator
+        document.getElementById('newPassword').addEventListener('input', function() {
+            const password = this.value;
+            const strengthBar = document.getElementById('passwordStrength');
+            const strengthText = document.getElementById('passwordStrengthText');
+            
+            // Reset classes
+            strengthBar.className = 'password-strength';
+            
+            if (password.length === 0) {
+                strengthText.textContent = '';
+                return;
+            }
+            
+            // Very simple strength check (for demo purposes)
+            if (password.length < 6) {
+                strengthBar.classList.add('weak');
+                strengthText.textContent = 'Weak';
+                strengthText.style.color = 'var(--error)';
+            } else if (password.length < 10) {
+                strengthBar.classList.add('medium');
+                strengthText.textContent = 'Medium';
+                strengthText.style.color = 'var(--warning)';
+            } else {
+                strengthBar.classList.add('strong');
+                strengthText.textContent = 'Strong';
+                strengthText.style.color = 'var(--success)';
+            }
+        });
+        
+        // Edit profile button
+        document.querySelector('.edit-profile-btn').addEventListener('click', function() {
+            alert('Edit profile functionality would open an edit mode here');
+            // In a real implementation, this would make fields editable
+            // and show save/cancel buttons
+        });
+        
+        // Form validation for profile form
+        document.getElementById('profileForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            let isValid = true;
+            
+            // Test Case 1: Empty First Name (Invalid)
+            if (!document.getElementById('firstName').value.trim()) {
+                document.getElementById('firstName').classList.add('invalid');
+                document.getElementById('firstNameError').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('firstName').classList.remove('invalid');
+                document.getElementById('firstNameError').style.display = 'none';
+            }
+            
+            // Test Case 2: Empty Last Name (Invalid)
+            if (!document.getElementById('lastName').value.trim()) {
+                document.getElementById('lastName').classList.add('invalid');
+                document.getElementById('lastNameError').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('lastName').classList.remove('invalid');
+                document.getElementById('lastNameError').style.display = 'none';
+            }
+            
+            // Test Case 3: Invalid Mobile Number (Invalid)
+            const mobile = document.getElementById('mobile').value.trim();
+            if (!mobile || !/^\+?\d{10,15}$/.test(mobile)) {
+                document.getElementById('mobile').classList.add('invalid');
+                document.getElementById('mobileError').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('mobile').classList.remove('invalid');
+                document.getElementById('mobileError').style.display = 'none';
+            }
+            
+            // Test Case 4: Future Date of Birth (Invalid)
+            const dob = new Date(document.getElementById('dob').value);
+            const today = new Date();
+            if (!document.getElementById('dob').value || dob > today) {
+                document.getElementById('dob').classList.add('invalid');
+                document.getElementById('dobError').textContent = dob > today ? 'Date cannot be in future' : 'Date is required';
+                document.getElementById('dobError').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('dob').classList.remove('invalid');
+                document.getElementById('dobError').style.display = 'none';
+            }
+            
+            // Test Case 5: Empty Address (Invalid)
+            if (!document.getElementById('address').value.trim()) {
+                document.getElementById('address').classList.add('invalid');
+                document.getElementById('addressError').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('address').classList.remove('invalid');
+                document.getElementById('addressError').style.display = 'none';
+            }
+            
+            // Test Case 6: Empty City (Invalid)
+            if (!document.getElementById('city').value.trim()) {
+                document.getElementById('city').classList.add('invalid');
+                document.getElementById('cityError').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('city').classList.remove('invalid');
+                document.getElementById('cityError').style.display = 'none';
+            }
+            
+            // Test Case 7: No State Selected (Invalid)
+            if (!document.getElementById('state').value) {
+                document.getElementById('state').classList.add('invalid');
+                document.getElementById('stateError').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('state').classList.remove('invalid');
+                document.getElementById('stateError').style.display = 'none';
+            }
+            
+            // Test Case 8: Invalid PIN Code (Invalid)
+            const pincode = document.getElementById('pincode').value.trim();
+            if (!pincode || !/^\d{6}$/.test(pincode)) {
+                document.getElementById('pincode').classList.add('invalid');
+                document.getElementById('pincodeError').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('pincode').classList.remove('invalid');
+                document.getElementById('pincodeError').style.display = 'none';
+            }
+            
+            if (isValid) {
+                alert('Profile updated successfully!');
+                // In a real app, would submit form to server here
+            }
+        });
+        
+        // Cancel button functionality
+        document.getElementById('cancelBtn').addEventListener('click', function() {
+            // Reset form to original values
+            document.getElementById('profileForm').reset();
+            
+            // Clear any validation errors
+            document.querySelectorAll('.error-message').forEach(el => {
+                el.style.display = 'none';
+            });
+            
+            document.querySelectorAll('.invalid').forEach(el => {
+                el.classList.remove('invalid');
+            });
+        });
+        
+        // Form validation for security form
+        document.getElementById('securityForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            let isValid = true;
+            
+            // Test Case 9: Empty Current Password (Invalid)
+            if (!document.getElementById('currentPassword').value.trim()) {
+                document.getElementById('currentPassword').classList.add('invalid');
+                document.getElementById('currentPasswordError').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('currentPassword').classList.remove('invalid');
+                document.getElementById('currentPasswordError').style.display = 'none';
+            }
+            
+            // Test Case 10: Empty New Password (Invalid)
+            const newPassword = document.getElementById('newPassword').value.trim();
+            if (!newPassword) {
+                document.getElementById('newPassword').classList.add('invalid');
+                document.getElementById('newPasswordError').style.display = 'block';
+                isValid = false;
+            } else if (newPassword.length < 6) {
+                document.getElementById('newPassword').classList.add('invalid');
+                document.getElementById('newPasswordError').textContent = 'Password must be at least 6 characters';
+                document.getElementById('newPasswordError').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('newPassword').classList.remove('invalid');
+                document.getElementById('newPasswordError').style.display = 'none';
+            }
+            
+            // Test Case 11: Password Mismatch (Invalid)
+            const confirmPassword = document.getElementById('confirmPassword').value.trim();
+            if (!confirmPassword || confirmPassword !== newPassword) {
+                document.getElementById('confirmPassword').classList.add('invalid');
+                document.getElementById('confirmPasswordError').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('confirmPassword').classList.remove('invalid');
+                document.getElementById('confirmPasswordError').style.display = 'none';
+            }
+            
+            if (isValid) {
+                alert('Password changed successfully!');
+                // In a real app, would submit form to server here
+            }
+        });
+        
+        // Test Case 12: Simulate invalid email format (would be validated server-side)
+        // This is just for demonstration as email is disabled in this form
+        function simulateInvalidEmail() {
+            document.getElementById('email').value = "invalid-email";
+            document.getElementById('email').classList.add('invalid');
+            setTimeout(() => {
+                document.getElementById('email').classList.remove('invalid');
+                document.getElementById('email').value = "harshitha.vr@example.com";
+            }, 2000);
+        }
+        
+        // Uncomment to test invalid email simulation
+        // setTimeout(simulateInvalidEmail, 3000);
+    </script>
+</body>
+</html>

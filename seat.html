@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seat Selection</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #060606;
+            color: white;
+            text-align: center;
+        }
+
+        .container {
+            margin: 50px auto;
+            width: 80%;
+        }
+
+        h1 {
+            color: #687eff;
+        }
+
+        .seat-map {
+            display: grid;
+            grid-template-columns: repeat(5, 50px);
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .seat {
+            width: 50px;
+            height: 50px;
+            background: #131313;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .seat:hover {
+            background: #687eff;
+        }
+
+        .seat.selected {
+            background: #ffbf00;
+        }
+
+        .seat.booked {
+            background: gray;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Select Your Seat</h1>
+    <h2 id="coach-name"></h2>
+
+    <div class="container">
+        <div class="seat-map">
+            <!-- Seats will be generated dynamically -->
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("coach-name").innerText = "Coach: " + (sessionStorage.getItem("selectedCoach") || "Unknown");
+
+        const seatContainer = document.querySelector(".seat-map");
+
+        // Generate 25 seats (5 columns x 5 rows)
+        for (let i = 1; i <= 25; i++) {
+            let seat = document.createElement("div");
+            seat.classList.add("seat");
+            seat.innerText = i;
+
+            // Randomly mark some seats as booked
+            if (Math.random() < 0.3) {
+                seat.classList.add("booked");
+            } else {
+                seat.addEventListener("click", () => {
+                    if (!seat.classList.contains("booked")) {
+                        seat.classList.toggle("selected");
+                    }
+                });
+            }
+
+            seatContainer.appendChild(seat);
+        }
+    </script>
+
+</body>
+</html>

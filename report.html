@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports | Indian Railways</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #7c3aed;
+            --primary-light: rgba(124, 58, 237, 0.2);
+            --primary-dark: #6d28d9;
+            --dark-bg: #0f172a;
+            --card-bg: #1e293b;
+            --card-hover: #334155;
+            --text-light: #e2e8f0;
+            --text-muted: #94a3b8;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --border-radius: 12px;
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-light);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            line-height: 1.5;
+        }
+
+        .back-btn {
+            position: fixed;
+            left: 20px;
+            top: 20px;
+            background: rgba(124, 58, 237, 0.1);
+            border: 1px solid rgba(124, 58, 237, 0.2);
+            color: var(--text-light);
+            padding: 10px 15px 10px 12px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 100;
+            font-weight: 500;
+            text-decoration: none;
+            transition: var(--transition);
+            backdrop-filter: blur(5px);
+        }
+
+        .back-btn:hover {
+            background: rgba(124, 58, 237, 0.3);
+            transform: translateX(-3px);
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.15);
+        }
+
+        .report-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 24px 40px;
+        }
+
+        .report-header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .report-header h1 {
+            font-size: 2.5rem;
+            margin: 0 0 12px;
+            background: linear-gradient(90deg, var(--primary), #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .report-header p {
+            color: var(--text-muted);
+            margin-top: 0;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .report-header::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), transparent);
+            margin: 24px auto 0;
+            border-radius: 2px;
+        }
+
+        .report-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .report-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 24px;
+            transition: var(--transition);
+            border: 1px solid rgba(255,255,255,0.05);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+
+        .report-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.2);
+            border-color: rgba(124, 58, 237, 0.3);
+        }
+
+        .report-card h2 {
+            margin: 0 0 20px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .report-card h2 i {
+            font-size: 1.3rem;
+            width: 36px;
+            height: 36px;
+            background: rgba(124, 58, 237, 0.1);
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .filter-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .filter-group {
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        select, input {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            color: var(--text-light);
+            font-family: 'Inter', sans-serif;
+            transition: var(--transition);
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 16px;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            align-self: flex-end;
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(124, 58, 237, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.05);
+            color: var(--text-light);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: rgba(255,255,255,0.2);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 14px 16px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        th {
+            background: rgba(124, 58, 237, 0.1);
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover {
+            background: rgba(255,255,255,0.03);
+        }
+
+        .badge {
+            display: inline-flex;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .badge i {
+            font-size: 0.7rem;
+        }
+
+        .badge-success {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--success);
+        }
+
+        .badge-warning {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--warning);
+        }
+
+        .badge-danger {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--danger);
+        }
+
+        .chart-container {
+            height: 280px;
+            margin-top: 20px;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.03);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            text-align: center;
+            transition: var(--transition);
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .stat-card:hover {
+            background: rgba(124, 58, 237, 0.1);
+            border-color: rgba(124, 58, 237, 0.2);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 8px 0;
+            background: linear-gradient(90deg, var(--primary), #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .export-options {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .export-btn {
+            flex: 1;
+            min-width: 160px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--text-light);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .export-btn:hover {
+            background: rgba(124, 58, 237, 0.1);
+            border-color: rgba(124, 58, 237, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .export-btn i {
+            font-size: 1.2rem;
+        }
+
+        .export-btn.pdf i { color: #f40f02; }
+        .export-btn.excel i { color: #217346; }
+        .export-btn.csv i { color: #7c3aed; }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--text-muted);
+            border-bottom: 2px solid transparent;
+            transition: var(--transition);
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+            background: rgba(124, 58, 237, 0.1);
+        }
+
+        .tab:hover:not(.active) {
+            color: var(--text-light);
+            background: rgba(255,255,255,0.05);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .report-container {
+                padding: 70px 16px 30px;
+            }
+            
+            .report-header h1 {
+                font-size: 2rem;
+            }
+            
+            .filter-controls {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            th, td {
+                padding: 12px 10px;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .export-options {
+                flex-direction: column;
+            }
+            
+            .export-btn {
+                width: 100%;
+            }
+            
+            .tabs {
+                overflow-x: auto;
+                padding-bottom: 8px;
+            }
+            
+            .tab {
+                padding: 8px 16px;
+                font-size: 0.9rem;
+                white-space: nowrap;
+            }
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .report-card {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        .report-card:nth-child(1) { animation-delay: 0.1s; }
+        .report-card:nth-child(2) { animation-delay: 0.2s; }
+        .report-card:nth-child(3) { animation-delay: 0.3s; }
+        .report-card:nth-child(4) { animation-delay: 0.4s; }
+    </style>
+</head>
+<body>
+    <!-- Back Button to Dashboard -->
+    <a href="dashboard.html" class="back-btn">
+        <i class="fas fa-arrow-left"></i> Back to Dashboard
+    </a>
+
+    <div class="report-container">
+        <div class="report-header">
+            <h1><i class="fas fa-chart-pie"></i> Travel Analytics</h1>
+            <p>Gain insights into your booking patterns and travel statistics</p>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Total Bookings</div>
+                <div class="stat-value">37</div>
+                <div class="stat-label">Last 12 Months</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Distance Traveled</div>
+                <div class="stat-value">12,845</div>
+                <div class="stat-label">Kilometers</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Total Spent</div>
+                <div class="stat-value">₹68,920</div>
+                <div class="stat-label">On Tickets</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Favorite Class</div>
+                <div class="stat-value">3A</div>
+                <div class="stat-label">AC 3-Tier</div>
+            </div>
+        </div>
+
+        <div class="report-grid">
+            <div class="report-card">
+                <h2><i class="fas fa-sliders-h"></i> Filter Options</h2>
+                <div class="tabs">
+                    <div class="tab active" onclick="switchTab(event, 'bookings')">Bookings</div>
+                    <div class="tab" onclick="switchTab(event, 'payments')">Payments</div>
+                    <div class="tab" onclick="switchTab(event, 'travel')">Travel</div>
+                </div>
+                
+                <div id="bookings" class="tab-content active">
+                    <div class="filter-controls">
+                        <div class="filter-group">
+                            <label>Time Period</label>
+                            <select>
+                                <option>Last 30 Days</option>
+                                <option>Last 3 Months</option>
+                                <option selected>Last 6 Months</option>
+                                <option>Last Year</option>
+                                <option>Custom Range</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Train Type</label>
+                            <select>
+                                <option selected>All Trains</option>
+                                <option>Express</option>
+                                <option>Superfast</option>
+                                <option>Rajdhani/Shatabdi</option>
+                                <option>Local/Passenger</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="filter-controls">
+                        <div class="filter-group">
+                            <label>Class</label>
+                            <select>
+                                <option selected>All Classes</option>
+                                <option>1A</option>
+                                <option>2A</option>
+                                <option>3A</option>
+                                <option>SL</option>
+                                <option>CC</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Status</label>
+                            <select>
+                                <option selected>All Statuses</option>
+                                <option>Confirmed</option>
+                                <option>Waitlisted</option>
+                                <option>Cancelled</option>
+                                <option>Completed</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" style="margin-top: 12px; width: 100%;">
+                        <i class="fas fa-filter"></i> Apply Filters
+                    </button>
+                </div>
+                
+                <div id="payments" class="tab-content">
+                    <div class="filter-controls">
+                        <div class="filter-group">
+                            <label>Payment Period</label>
+                            <select>
+                                <option>Last 30 Days</option>
+                                <option selected>Last 3 Months</option>
+                                <option>Last 6 Months</option>
+                                <option>Last Year</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Payment Method</label>
+                            <select>
+                                <option selected>All Methods</option>
+                                <option>Credit Card</option>
+                                <option>Debit Card</option>
+                                <option>UPI</option>
+                                <option>Net Banking</option>
+                                <option>Wallet</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="filter-controls">
+                        <div class="filter-group">
+                            <label>Amount Range</label>
+                            <select>
+                                <option selected>All Amounts</option>
+                                <option>Below ₹1,000</option>
+                                <option>₹1,000 - ₹3,000</option>
+                                <option>Above ₹3,000</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Status</label>
+                            <select>
+                                <option selected>All Statuses</option>
+                                <option>Success</option>
+                                <option>Failed</option>
+                                <option>Refunded</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" style="margin-top: 12px; width: 100%;">
+                        <i class="fas fa-filter"></i> Apply Filters
+                    </button>
+                </div>
+                
+                <div id="travel" class="tab-content">
+                    <div class="filter-controls">
+                        <div class="filter-group">
+                            <label>Travel Period</label>
+                            <select>
+                                <option>Last 30 Days</option>
+                                <option selected>Last 3 Months</option>
+                                <option>Last 6 Months</option>
+                                <option>Last Year</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Journey Type</label>
+                            <select>
+                                <option selected>All Journeys</option>
+                                <option>One Way</option>
+                                <option>Round Trip</option>
+                                <option>Multi-City</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="filter-controls">
+                        <div class="filter-group">
+                            <label>From Station</label>
+                            <select>
+                                <option selected>All Stations</option>
+                                <option>Delhi (DEL)</option>
+                                <option>Mumbai (CSTM)</option>
+                                <option>Bangalore (SBC)</option>
+                                <option>Chennai (MAS)</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>To Station</label>
+                            <select>
+                                <option selected>All Stations</option>
+                                <option>Delhi (DEL)</option>
+                                <option>Mumbai (CSTM)</option>
+                                <option>Bangalore (SBC)</option>
+                                <option>Chennai (MAS)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" style="margin-top: 12px; width: 100%;">
+                        <i class="fas fa-filter"></i> Apply Filters
+                    </button>
+                </div>
+            </div>
+
+            <div class="report-card">
+                <h2><i class="fas fa-calendar-alt"></i> Monthly Travel</h2>
+                <div class="chart-container">
+                    <canvas id="monthlyChart"></canvas>
+                </div>
+                <div class="tabs" style="margin-top: 16px;">
+                    <div class="tab active" onclick="switchChart('bookings')">Bookings</div>
+                    <div class="tab" onclick="switchChart('distance')">Distance</div>
+                    <div class="tab" onclick="switchChart('spending')">Spending</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="report-card">
+            <h2><i class="fas fa-ticket-alt"></i> Recent Bookings</h2>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>PNR</th>
+                            <th>Date</th>
+                            <th>Train</th>
+                            <th>Route</th>
+                            <th>Class</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>8264512397</td>
+                            <td>15 Oct 2023</td>
+                            <td>12951 Rajdhani Exp</td>
+                            <td>DEL → CSTM</td>
+                            <td>3A</td>
+                            <td><span class="badge badge-success"><i class="fas fa-check-circle"></i> Confirmed</span></td>
+                        </tr>
+                        <tr>
+                            <td>7216548932</td>
+                            <td>20 Oct 2023</td>
+                            <td>12009 Shatabdi Exp</td>
+                            <td>CSTM → ADI</td>
+                            <td>CC</td>
+                            <td><span class="badge badge-success"><i class="fas fa-check-circle"></i> Confirmed</span></td>
+                        </tr>
+                        <tr>
+                            <td>6359874125</td>
+                            <td>22 Oct 2023</td>
+                            <td>12284 Duronto Exp</td>
+                            <td>SBC → NDLS</td>
+                            <td>2A</td>
+                            <td><span class="badge badge-warning"><i class="fas fa-clock"></i> Waitlist (WL 3)</span></td>
+                        </tr>
+                        <tr>
+                            <td>5487123698</td>
+                            <td>25 Oct 2023</td>
+                            <td>12302 Rajdhani Exp</td>
+                            <td>NDLS → SBC</td>
+                            <td>3A</td>
+                            <td><span class="badge badge-danger"><i class="fas fa-times-circle"></i> Cancelled</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <button class="btn btn-secondary" style="margin-top: 20px; width: 100%;">
+                <i class="fas fa-list"></i> View All Bookings (37)
+            </button>
+        </div>
+
+        <div class="report-card">
+            <h2><i class="fas fa-file-export"></i> Export Data</h2>
+            <p style="color: var(--text-muted); margin-bottom: 20px;">Download your travel data for offline analysis or record keeping.</p>
+            
+            <div class="filter-controls">
+                <div class="filter-group">
+                    <label>Time Period</label>
+                    <select>
+                        <option>Last 30 Days</option>
+                        <option selected>Last 3 Months</option>
+                        <option>Last 6 Months</option>
+                        <option>Last Year</option>
+                        <option>All Time</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Data Type</label>
+                    <select>
+                        <option selected>Booking History</option>
+                        <option>Payment Records</option>
+                        <option>Travel Summary</option>
+                        <option>Complete Data</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="export-options">
+                <div class="export-btn pdf">
+                    <i class="fas fa-file-pdf"></i>
+                    <span>PDF Report</span>
+                </div>
+                <div class="export-btn excel">
+                    <i class="fas fa-file-excel"></i>
+                    <span>Excel Spreadsheet</span>
+                </div>
+                <div class="export-btn csv">
+                    <i class="fas fa-file-csv"></i>
+                    <span>CSV Data</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching functionality
+        function switchTab(event, tabId) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Deactivate all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Activate clicked tab
+            event.currentTarget.classList.add('active');
+            
+            // Show corresponding content
+            document.getElementById(tabId).classList.add('active');
+        }
+        
+        // Initialize monthly bookings chart
+        const ctx = document.getElementById('monthlyChart').getContext('2d');
+        const monthlyChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
+                datasets: [{
+                    label: 'Bookings',
+                    data: [3, 5, 4, 7, 6, 8, 4],
+                    backgroundColor: 'rgba(124, 58, 237, 0.7)',
+                    borderColor: 'rgba(124, 58, 237, 1)',
+                    borderWidth: 1,
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: '#1e293b',
+                        titleColor: '#e2e8f0',
+                        bodyColor: '#94a3b8',
+                        borderColor: 'rgba(255,255,255,0.1)',
+                        borderWidth: 1,
+                        padding: 12,
+                        usePointStyle: true,
+                        callbacks: {
+                            label: function(context) {
+                                return `Bookings: ${context.raw}`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            color: 'rgba(255,255,255,0.05)',
+                            drawBorder: false
+                        },
+                        ticks: {
+                            color: '#94a3b8'
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(255,255,255,0.05)',
+                            drawBorder: false
+                        },
+                        ticks: {
+                            color: '#94a3b8',
+                            stepSize: 2
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Chart switching function
+        function switchChart(type) {
+            if (type === 'bookings') {
+                monthlyChart.data.datasets[0].label = 'Bookings';
+                monthlyChart.data.datasets[0].data = [3, 5, 4, 7, 6, 8, 4];
+            } else if (type === 'distance') {
+                monthlyChart.data.datasets[0].label = 'Distance (km)';
+                monthlyChart.data.datasets[0].data = [1200, 1850, 1500, 2100, 1750, 2400, 1250];
+            } else if (type === 'spending') {
+                monthlyChart.data.datasets[0].label = 'Spending (₹)';
+                monthlyChart.data.datasets[0].data = [4500, 7200, 5800, 8900, 7400, 10200, 5200];
+            }
+            
+            monthlyChart.update();
+            
+            // Update active tab
+            document.querySelectorAll('.chart-container + .tabs .tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+        }
+        
+        // Simulate loading data
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                document.querySelectorAll('.report-card').forEach(card => {
+                    card.style.opacity = '1';
+                });
+            }, 100);
+        });
+    </script>
+</body>
+</html>
